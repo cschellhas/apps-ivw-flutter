@@ -19,7 +19,6 @@ rootProject.allprojects {
         google()
         jcenter()
         flatDir {
-            dirs 'libs'
             dirs project(':ivw_flutter').file('libs')
         }
     }
@@ -43,5 +42,5 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     //Die INFOnline Library muss verlinkt werden
-    implementation(name:'infonlinelib_2.2.0', ext:'aar')
+    api(name:'infonlinelib_2.2.0', ext:'aar')
 }
