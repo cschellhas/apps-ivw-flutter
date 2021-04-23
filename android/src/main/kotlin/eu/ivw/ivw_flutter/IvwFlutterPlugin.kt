@@ -87,11 +87,11 @@ class IvwFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
       // Crash
       // TODO: java.lang.NoClassDefFoundError: Failed resolution of: Landroidx/localbroadcastmanager/content/LocalBroadcastManager;
-      /*initIOLSessionType(
+      initIOLSessionType(
               IOLSessionType.SZM,
               appId,
               IOLSessionPrivacySetting.LIN
-      )*/
+      )
       // @Nullable Context var1, @NonNull String var2, boolean var3, @NonNull IOLSessionPrivacySetting var4
       /*IOLSession.getSessionForType(IOLSessionType.SZM).initIOLSession(
               //applicationContext,
