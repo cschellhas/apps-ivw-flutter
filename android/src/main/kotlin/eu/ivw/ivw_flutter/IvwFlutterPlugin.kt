@@ -77,35 +77,24 @@ class IvwFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun callInitialize(call: MethodCall, result: Result) {
     val appId: String? = call.argument("appId") ?: "iamtest"
+    val debug: Boolean = call.argument("debug") ?: true
     if (appId == null || appId.isEmpty()) {
       result.error("no_app_id", "a null or empty appId was provided", null)
       return
+    } else if (applicationContext != null) {
+      try {
+        // The IOLSession needs the application context to log enterForeground & enterBackground events correctly.
+        IOLSession.init(applicationContext)
+        IOLSession.getSessionForType(IOLSessionType.SZM)          // Session Type SZM
+                  .initIOLSession(appId,                          // Offer Identifier
+                                  debug,              // Debug mode on/off
+                                  IOLSessionPrivacySetting.LIN)   // Priv
+        result.success(true)
+      } catch (e: Exception) {
+        result.error("unexpected_error", "${e?.message}", null)
+      }
     } else {
-      // The IOLSession needs the application context to log enterForeground & enterBackground
-      // events correctly.
-      IOLSession.init(applicationContext)
-
-      // Crash
-      // TODO: java.lang.NoClassDefFoundError: Failed resolution of: Landroidx/localbroadcastmanager/content/LocalBroadcastManager;
-      initIOLSessionType(
-              IOLSessionType.SZM,
-              appId,
-              IOLSessionPrivacySetting.LIN
-      )
-      // @Nullable Context var1, @NonNull String var2, boolean var3, @NonNull IOLSessionPrivacySetting var4
-      /*IOLSession.getSessionForType(IOLSessionType.SZM).initIOLSession(
-              //applicationContext,
-              "aadtonl", //"iamtest",
-              BuildConfig.DEBUG,
-              IOLSessionPrivacySetting.LIN
-      )*/
-
-      result.success(true)
-
-      // Alternatively you can initialize the IOLSession directly, if you want to initialize the
-      // session directly.
-      //IOLSession.getSessionForType(IOLSessionType.SZM).initIOLSession(this, "iamtest", true, IOLSessionPrivacySetting.LIN)
-      //IOLSession.getSessionForType(IOLSessionType.OEWA).initIOLSession(this, "iamtest", true, IOLSessionPrivacySetting.LIN)
+      result.error("no_context", "application context was null", null)
     }
   }
 
