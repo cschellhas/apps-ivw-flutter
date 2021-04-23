@@ -19,7 +19,7 @@ rootProject.allprojects {
         google()
         jcenter()
         flatDir {
-            dirs 'libs'
+            dirs project(':ivw_flutter').file('libs')
         }
     }
 }
@@ -41,6 +41,12 @@ android {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+    // IVW (=INFOnline) has following dependecies:
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
+    implementation 'androidx.preference:preference:1.1.1'
+
     //Die INFOnline Library muss verlinkt werden
-    implementation 'de.infonline.lib:infonlinelib_2.2.0@aar'
+    api(name:'infonlinelib_2.2.1', ext:'aar')
 }
