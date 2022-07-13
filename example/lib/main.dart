@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:ivw_flutter/ivw_flutter.dart';
 
 void main() async {
+
+  var url = "https://data-ef4e2c0163.example.com";
+  var appID = "iamtest";
   WidgetsFlutterBinding.ensureInitialized();
-  await IvwFlutter.initialize('iamtest').then((value) {
+  await IvwFlutter.initialize(appID).then((value) {
+    print("ivw_flutter: initialized = $value");
+  }).catchError((e) {
+    print("ivw_flutter: failed with $e");
+  });
+  await IvwFlutter.initializeIOMb(url, appID).then((value) {
     print("ivw_flutter: initialized = $value");
   }).catchError((e) {
     print("ivw_flutter: failed with $e");
@@ -34,6 +42,7 @@ class _MyAppState extends State<MyApp> {
             child: Text('Send test event'),
             onPressed: () {
               IvwFlutter.logEvent('ivwPath');
+              IvwFlutter.logEventIOMb('ivwPath');
             },
           ),
         ),
