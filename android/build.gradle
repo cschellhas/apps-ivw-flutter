@@ -21,6 +21,20 @@ rootProject.allprojects {
         flatDir {
             dirs project(':ivw_flutter').file('libs')
         }
+        repositories {
+            maven {
+                url "https://repo.infonline.de/api/v4/projects/5/packages/maven"
+                name "INFOnline"
+
+                credentials(HttpHeaderCredentials) {
+                    name = "Private-Token"
+                    value = 'MAzEBJNLRaj-8jsv6csy'
+                }
+                authentication {
+                    header(HttpHeaderAuthentication)
+                }
+            }
+        }
     }
 }
 
@@ -36,16 +50,24 @@ android {
     defaultConfig {
         minSdkVersion 21
     }
+    compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
+        // Sets Java compatibility to Java 8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
     // IVW (=INFOnline) has following dependecies:
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
     implementation 'com.google.android.gms:play-services-location:19.0.1'
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
     implementation 'androidx.preference:preference:1.1.1'
+    implementation 'de.infonline:iomb-library:1.0.1'
 
     //Die INFOnline Library muss verlinkt werden
     api(name:'infonlinelib_2.3.1', ext:'aar')

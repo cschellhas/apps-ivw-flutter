@@ -7,6 +7,7 @@ import de.infonline.lib.IOLSession
 import de.infonline.lib.IOLSessionPrivacySetting
 import de.infonline.lib.IOLSessionType
 import de.infonline.lib.IOLViewEvent
+import de.infonline.lib.iomb.IOLDebug
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -14,6 +15,9 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import de.infonline.lib.iomb.IOMB
+import de.infonline.lib.iomb.measurements.Measurement
+import de.infonline.lib.iomb.measurements.iomb.IOMBSetup
 
 
 /** IvwFlutterPlugin */
@@ -23,6 +27,7 @@ class IvwFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     const val TAG = "ivw_flutter"
 
     var applicationContext: Context? = null
+    lateinit var IOMB_SESSION: Measurement
   }
 
   /// The MethodChannel that will the communication between Flutter and native Android
@@ -75,6 +80,16 @@ class IvwFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     result.success(true)
   }
 
+  private fun callLogEventIOMb(call: MethodCall, result: Result) {
+    val ivwPathName: String? = call.argument("ivwPath")
+    //val event = de.infonline.lib.iomb.IOLViewEvent(type = de.infonline.lib.iomb.IOLViewEvent.IOLViewEventType.Appeared, category = ivwPathName)
+    //val event = IOLViewEvent()
+    val event = de.infonline.lib.iomb.IOLViewEvent(type = de.infonline.lib.iomb.IOLViewEvent.IOLViewEventType.Appeared, category = ivwPathName)
+    IOMB_SESSION.logEvent(event)
+
+    result.success(true)
+  }
+
   private fun callInitialize(call: MethodCall, result: Result) {
     val appId: String? = call.argument("appId") ?: "iamtest"
     val debug: Boolean = call.argument("debug") ?: true
@@ -98,6 +113,33 @@ class IvwFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     }
   }
 
+  private fun callInitializeIOMb(call: MethodCall, result: Result) {
+    val appId: String? = call.argument("appId") ?: "iamtest"
+    val url: String? = call.argument("url") ?: "url"
+    val debug: Boolean = call.argument("debug") ?: true
+    if (appId == null || appId.isEmpty() || url == null || url.isEmpty()) {
+      result.error("no_app_id", "a null or empty appId/url was provided", null)
+      return
+    } else if (applicationContext != null) {
+      try {
+        IOLDebug.debugMode = debug
+    //    IOLDebug.debugMode = debug
+        // The IOLSession needs the application context to log enterForeground & enterBackground events correctly.
+        val setup = IOMBSetup(baseUrl = url,
+        offerIdentifier = appId)
+
+        IOMB.create(setup).subscribe { it ->
+          IOMB_SESSION = it
+        }
+        result.success(true)
+      } catch (e: Exception) {
+        result.error("unexpected_error", "${e?.message}", null)
+      }
+    } else {
+      result.error("no_context", "application context was null", null)
+    }
+  }
+
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     // setup channel
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "ivw_flutter")
@@ -107,7 +149,9 @@ class IvwFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     when (call.method) {
       "initialize" -> callInitialize(call, result)
+      "initializeIOMb" -> callInitializeIOMb(call, result)
       "logEvent" -> callLogEvent(call, result)
+      "logEventIOMb" -> callLogEventIOMb(call, result)
       else -> result.notImplemented()
     }
   }
