@@ -39,7 +39,7 @@ public class SwiftIvwFlutterPlugin: NSObject, FlutterPlugin {
             result(true)
             return;
         } else {
-            result(FlutterError.init(code: "outbrain_flutter", message: "Arguments missing", details: nil));
+            result(FlutterError.init(code: "ivw_flutter", message: "Arguments missing", details: nil));
             return;
         }
     }
@@ -53,12 +53,12 @@ public class SwiftIvwFlutterPlugin: NSObject, FlutterPlugin {
             IOMBLogging.setDebugLogLevel(.info)
         }
             guard let url = URL(string: url) else { return }
-            let configuration = IOMBSessionConfiguration(offerIdentifier: "iamtest", baseURL: url)
+            let configuration = IOMBSessionConfiguration(offerIdentifier: appId, baseURL: url)
             IOMBSession.defaultSession.start(with: configuration)
             result(true)
             return;
         } else {
-            result(FlutterError.init(code: "outbrain_flutter", message: "Arguments missing", details: nil));
+            result(FlutterError.init(code: "ivw_flutter", message: "Arguments missing", details: nil));
             return;
         }
     }
@@ -70,7 +70,7 @@ public class SwiftIvwFlutterPlugin: NSObject, FlutterPlugin {
             let event = IOLViewEvent(type: .appeared, category: ivwPathName, comment: nil)
                IOLSession.defaultSession(for: .SZM).logEvent(event)
         } else {
-            result(FlutterError.init(code: "outbrain_flutter", message: "Arguments missing", details: nil));
+            result(FlutterError.init(code: "ivw_flutter", message: "Arguments missing", details: nil));
             return;
         }
         
@@ -83,7 +83,7 @@ public class SwiftIvwFlutterPlugin: NSObject, FlutterPlugin {
             let event = IOMBViewEvent(type: .appeared, category: ivwPathName, comment: nil)
              IOMBSession.defaultSession.logEvent(event)
         } else {
-            result(FlutterError.init(code: "outbrain_flutter", message: "Arguments missing", details: nil));
+            result(FlutterError.init(code: "ivw_flutter", message: "Arguments missing", details: nil));
             return;
         }
         
