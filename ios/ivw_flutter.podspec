@@ -18,12 +18,12 @@ A new flutter plugin project.
   s.platform = :ios, '12.0'
   s.ios.framework = 'AdSupport'
   
-  s.xcconfig = { 'OTHER_LDFLAGS' => '-framework INFOnlineLibrary' }
-  s.xcconfig = { 'FRAMEWORK_SEARCH_PATHS' => '${PODS_ROOT}/infonline/INFOnlineLibrary/$(PLATFORM_NAME)/' }
+  #s.xcconfig = { 'OTHER_LDFLAGS' => '-framework INFOnlineLibrary' }
+  #s.xcconfig = { 'FRAMEWORK_SEARCH_PATHS' => '${PODS_ROOT}/infonline/INFOnlineLibrary/$(PLATFORM_NAME)/' }
 
-  s.script_phase = { :name => 'RunInfonline', :script => '/bin/sh "$PROJECT_DIR/infonline/INFOnlineLibrary/copy-framework.sh"' }
+  #s.script_phase = { :name => 'RunInfonline', :script => '/bin/sh "$PROJECT_DIR/infonline/INFOnlineLibrary/copy-framework.sh"' }
 
-  s.dependency 'IOMbLibrary'
+  #s.dependency 'IOMbLibrary'
 
 
   # Flutter.framework does not contain a i386 slice.
