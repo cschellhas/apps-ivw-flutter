@@ -60,16 +60,6 @@ class IvwFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
     currentPrivacySetting = null
   }
 
-  private fun initIOLSessionType(
-          type: IOLSessionType,
-          customerData: String,
-          privacySetting: IOLSessionPrivacySetting
-  ) {
-    IOLSession.getSessionForType(type).initIOLSession("iamtest", null, customerData, BuildConfig.DEBUG, privacySetting)
-    currentUserInput = customerData
-    currentSessionType = type
-    currentPrivacySetting = privacySetting
-  }
 
   private fun callLogEvent(call: MethodCall, result: Result) {
     val ivwPathName: String? = call.argument("ivwPath")
@@ -82,8 +72,7 @@ class IvwFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private fun callLogEventIOMb(call: MethodCall, result: Result) {
     val ivwPathName: String? = call.argument("ivwPath")
-    //val event = de.infonline.lib.iomb.IOLViewEvent(type = de.infonline.lib.iomb.IOLViewEvent.IOLViewEventType.Appeared, category = ivwPathName)
-    //val event = IOLViewEvent()
+
     val event = de.infonline.lib.iomb.IOLViewEvent(type = de.infonline.lib.iomb.IOLViewEvent.IOLViewEventType.Appeared, category = ivwPathName)
     IOMB_SESSION.logEvent(event)
 
@@ -91,13 +80,14 @@ class IvwFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   private fun callInitialize(call: MethodCall, result: Result) {
-    val appId: String? = call.argument("appId") ?: "iamtest"
+    val appId: String = call.argument("appId") ?: "iamtest"
     val debug: Boolean = call.argument("debug") ?: true
     if (appId == null || appId.isEmpty()) {
       result.error("no_app_id", "a null or empty appId was provided", null)
       return
     } else if (applicationContext != null) {
       try {
+        Log.d("[IVW Init]", "Init with" + debug.toString() + appId);
         // The IOLSession needs the application context to log enterForeground & enterBackground events correctly.
         IOLSession.init(applicationContext)
         IOLSession.getSessionForType(IOLSessionType.SZM)          // Session Type SZM
